@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logged Out - Customer Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="logout-page">
+    <div class="logout-container">
+        <div class="logout-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+        </div>
+        <h1 class="logout-title">Logged Out Successfully</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="logout-message">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <p class="logout-text">You have been securely logged out of the system.</p>
+        <a href="{{ url_for('index') }}" class="home-btn">Return to Home Page</a>
+    </div>
+</body>
+</html>

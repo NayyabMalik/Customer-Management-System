@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Customer Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="login-container animate__animated animate__fadeInUp animate__faster">
+        <div class="login-content">
+            <!-- Decorative elements -->
+            <div class="decorative-circle circle-top-right"></div>
+            <div class="decorative-circle circle-bottom-left"></div>
+            
+            <!-- Logo/Header -->
+            <div class="login-header">
+                <div class="logo-container floating">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="logo-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                    </svg>
+                </div>
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Sign in to your account</p>
+            </div>
+            
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="error-message animate__animated animate__headShake">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <!-- Login form -->
+            <form method="POST" action="{{ url_for('login') }}" class="login-form">
+                <div class="form-group">
+                    <label class="input-label">Username</label>
+                    <input type="text" name="username" class="form-input" required placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label class="input-label">Password</label>
+                    <input type="password" name="password" class="form-input" required placeholder="••••••••">
+                </div>
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input id="remember-me" name="remember-me" type="checkbox" class="remember-checkbox">
+                        <label for="remember-me" class="remember-label">Remember me</label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                </div>
+                <div class="form-submit">
+                    <button type="submit" class="login-btn">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+            
+            <div class="signup-redirect">
+                <p class="redirect-text">
+                    Don't have an account?
+                    <a href="{{ url_for('signup') }}" class="signup-link">Sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add animation to form inputs on focus
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.classList.add('animate__animated', 'animate__pulse', 'animate__faster');
+            });
+            input.addEventListener('blur', () => {
+                input.classList.remove('animate__animated', 'animate__pulse', 'animate__faster');
+            });
+        });
+    </script>
+</body>
+</html>

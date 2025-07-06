@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <!-- Background elements -->
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-circle bg-circle-3"></div>
+    
+    <!-- Main content -->
+    <div class="login-container">
+        <div class="header-section">
+            <h1 class="system-title">Customer Management System</h1>
+            <p class="system-description">Manage your customers efficiently with our powerful tools</p>
+        </div>
+        
+        <div class="space-y-4">
+            <a href="{{ url_for('login') }}" class="login-btn">Agent/Admin Login</a>
+            <a href="{{ url_for('signup') }}" class="signup-btn">Register New Account</a>
+        </div>
+        
+        <!-- Decorative elements -->
+        <div class="decorative-element decorative-triangle"></div>
+        <div class="decorative-element decorative-dots"></div>
+    </div>
+</body>
+</html>

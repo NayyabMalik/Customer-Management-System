@@ -1,0 +1,196 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet">
+</head>
+<body class="admin-dashboard">
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1 class="dashboard-title">
+                <svg class="dashboard-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4 13H10V21H4V13Z" />
+                    <path d="M4 3H10V11H4V3Z" />
+                    <path d="M14 3H20V11H14V3Z" />
+                    <path d="M14 13H20V21H14V13Z" />
+                </svg>
+                Customer Management
+            </h1>
+            <div class="action-buttons">
+                <button onclick="toggleAddForm()" class="add-customer-btn">
+                    <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                    </svg>
+                    Add Customers
+                </button>
+                <a href="{{ url_for('logout') }}" class="logout-btn">
+                    <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
+                    </svg>
+                    Logout
+                </a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-message success animate__animated animate__fadeIn">
+                    <svg class="flash-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('admin') }}" class="add-customer-form hidden" id="add-customer-form">
+            <input type="hidden" name="action" value="add">
+            <div class="form-header">
+                <h2>Add New Customers</h2>
+                <button type="button" onclick="addCustomerRow()" class="add-row-btn">
+                    <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    Add Row
+                </button>
+            </div>
+            
+            <div id="customer-rows">
+                <div class="customer-form-row">
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label>Name</label>
+                            <input type="text" name="name[]" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Phone</label>
+                            <input type="text" name="phone[]" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Email</label>
+                            <input type="email" name="email[]" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Purchase History</label>
+                            <input type="text" name="purchase_history[]">
+                        </div>
+                        <div class="form-field full-width">
+                            <label>Notes</label>
+                            <textarea name="notes[]"></textarea>
+                        </div>
+                        <div class="form-actions full-width">
+                            <button type="button" onclick="removeCustomerRow(this)" class="remove-btn">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-footer">
+                <button type="submit" class="save-btn">
+                    Save All Customers
+                </button>
+            </div>
+        </form>
+
+        <div class="customer-list-container">
+            <h2 class="section-title">Customer List</h2>
+            
+            {% if not customers %}
+                <div class="empty-state">
+                    <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p>No customers found</p>
+                </div>
+            {% else %}
+                <div class="customer-list">
+                    {% for customer in customers %}
+                        <div class="customer-card">
+                            <div class="customer-info">
+                                <div class="info-grid">
+                                    <div>
+                                        <span>Name:</span>
+                                        <p>{{ customer.name }}</p>
+                                    </div>
+                                    <div>
+                                        <span>Phone:</span>
+                                        <p>{{ customer.phone }}</p>
+                                    </div>
+                                    <div>
+                                        <span>Email:</span>
+                                        <p>{{ customer.email }}</p>
+                                    </div>
+                                    <div>
+                                        <span>Purchase History:</span>
+                                        <p>{{ customer.purchase_history or '-' }}</p>
+                                    </div>
+                                    <div class="full-width">
+                                        <span>Notes:</span>
+                                        <p>{{ customer.notes or '-' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="customer-actions">
+                                <button onclick="toggleUpdateForm('{{ customer._id }}')" class="update-btn">
+                                    Update
+                                </button>
+                                <form method="POST" action="{{ url_for('admin') }}">
+                                    <input type="hidden" name="customer_id" value="{{ customer._id }}">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button type="submit" class="delete-btn">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <form method="POST" action="{{ url_for('admin') }}" class="update-form hidden" id="update-form-{{ customer._id }}">
+                                <input type="hidden" name="customer_id" value="{{ customer._id }}">
+                                <input type="hidden" name="action" value="update">
+                                
+                                <div class="form-grid">
+                                    <div class="form-field">
+                                        <label>Name</label>
+                                        <input type="text" name="name" value="{{ customer.name }}" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label>Phone</label>
+                                        <input type="text" name="phone" value="{{ customer.phone }}" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label>Email</label>
+                                        <input type="email" name="email" value="{{ customer.email }}" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label>Purchase History</label>
+                                        <input type="text" name="purchase_history" value="{{ customer.purchase_history }}">
+                                    </div>
+                                    <div class="form-field full-width">
+                                        <label>Notes</label>
+                                        <textarea name="notes">{{ customer.notes }}</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-footer">
+                                    <button type="submit" class="save-btn">
+                                        Save Changes
+                                    </button>
+                                    <button type="button" onclick="toggleUpdateForm('{{ customer._id }}')" class="cancel-btn">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/admin.js')}}"></script>
+</body>
+</html> 
