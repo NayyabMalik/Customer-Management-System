@@ -8,8 +8,9 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 # MongoDB connection
-client = MongoClient('mongodb://localhost:27017/')
-db = client['customer_management']
+
+client = MongoClient(os.environ.get("MONGO_URI"))
+db = client['customerManagement']
 users_collection = db['users']
 customers_collection = db['customers']
 
